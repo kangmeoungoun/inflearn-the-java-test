@@ -6,11 +6,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 
 import java.lang.reflect.Method;
 
-/**
- * Created by jojoldu@gmail.com on 2020-11-26
- * Blog : http://jojoldu.tistory.com
- * Github : http://github.com/jojoldu
- */
+
 public class FindSLowTestExtension implements BeforeTestExecutionCallback, AfterTestExecutionCallback {
 
     private  long THRESHOLD;

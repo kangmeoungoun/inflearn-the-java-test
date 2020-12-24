@@ -1,10 +1,6 @@
 package me.whiteship.inflearnthejavatest;
 
-/**
- * Created by jojoldu@gmail.com on 2020-11-24
- * Blog : http://jojoldu.tistory.com
- * Github : http://github.com/jojoldu
- */
+
 public class GenericTest<T extends Number> {
     private T t;
 

@@ -27,14 +27,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
-/**
- * Created by jojoldu@gmail.com on 2020-11-22
- * Blog : http://jojoldu.tistory.com
- * Github : http://github.com/jojoldu
- */
 //@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-//@ExtendWith(FindSLowTestExtension.class)
+@ExtendWith(FindSLowTestExtension.class)
 class StudyTest {
     @RegisterExtension
     static FindSLowTestExtension findSLowTestExtension = new FindSLowTestExtension(1000L);
