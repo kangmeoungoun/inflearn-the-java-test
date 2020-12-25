@@ -7,6 +7,7 @@ import me.whiteship.inflearnthejavatest.domain.StudyStatus;
 import me.whiteship.inflearnthejavatest.member.MemberService;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -38,14 +39,13 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class StudyServiceTest{
 
-    //@Mock
-    //MemberService memberService;
-    //@Mock
-    //StudyRepository studyRepository;
+    @Mock
+    MemberService memberService;
+    @Mock
+    StudyRepository studyRepository;
 
     @Test
-    void createNewStudy(@Mock MemberService memberService
-            , @Mock StudyRepository studyRepository){
+    void createStudyService(){
 
         StudyService studyService = new StudyService(memberService , studyRepository);
         assertNotNull(studyService);
@@ -54,35 +54,25 @@ class StudyServiceTest{
         member.setId(1L);
         member.setEmail("kes98202@naver.com");
 
-        /*
-        //2L 로 호출할시 객체 못받는다.
-        //when(memberService.findById(1L)).thenReturn(Optional.of(member));
-        //파라미터러 멀 호출하던간에 같은 객체롤 호출
-        when(memberService.findById(any())).thenReturn(Optional.of(member));
+        Study study = new Study(10 , "테스트");
 
-        assertEquals("kes98202@naver.com",memberService.findById(1L).get().getEmail());
-        assertEquals("kes98202@naver.com",memberService.findById(2L).get().getEmail());
+        when(memberService.findById(1l)).thenReturn(Optional.of(member));
+        when(studyRepository.save(study)).thenReturn(study);
 
-        doThrow(new IllegalArgumentException()).when(memberService).validate(1l);
-        assertThrows(IllegalArgumentException.class,()->{
-            memberService.validate(1l);
-        });
-        memberService.validate(2l);
+        studyService.createNewStudy(1l , study);
+        assertEquals(member,study.getOwner());
+        //memberService의 notify 메소드를 1번 호출했는지 확인
+        verify(memberService,times(1)).notify(study);
+        //notify(study) 호출후 아무것도 memberService 아무것도 하지말아라 테스트 깨진다. 어떤 액션 후에 그 목을 다시는 사용하지 말아라
+        verify(memberService,times(1)).notify(member);
+        //memberService의 validate 메소드 를 전혀 호출이 되지 않는지 확인
+        verify(memberService,never()).validate(any());
 
-        when(memberService.findById(1L)).thenThrow(new RuntimeException());
-        */
-        when(memberService.findById(any())).thenReturn(Optional.of(member))
-                                            .thenThrow(new RuntimeException())
-                                            .thenReturn(Optional.empty());
+        //순서 테스트 study 를 먼저 호출하고 member 을 호출한다.
+        InOrder inOrder = inOrder(memberService);
+        inOrder.verify(memberService).notify(study);
+        inOrder.verify(memberService).notify(member);
 
-        Optional<Member> byId = memberService.findById(1L);
-        assertEquals("kes98202@naver.com",byId.get().getEmail());
-
-        assertThrows(RuntimeException.class,()->{
-            memberService.findById(2L);
-        });
-
-        assertEquals(Optional.empty(),memberService.findById(3L));
 
     }
 }

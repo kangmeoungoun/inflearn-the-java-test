@@ -20,6 +20,8 @@ public class Study {
     private String name;
     private LocalDateTime openedDateTime;
     private Long ownerId;
+    private Member owner;
+
 
     public Study(int limit, String name) {
         this.limitCount = limit;
@@ -36,7 +38,6 @@ public class Study {
     public void open() {
         this.openedDateTime = LocalDateTime.now();
         this.status = StudyStatus.OPENED;
-
     }
 
 }
