@@ -56,23 +56,20 @@ class StudyServiceTest{
 
         Study study = new Study(10 , "테스트");
 
-        when(memberService.findById(1l)).thenReturn(Optional.of(member));
-        when(studyRepository.save(study)).thenReturn(study);
 
+        given(memberService.findById(1L)).willReturn(Optional.of(member));
+        given(studyRepository.save(study)).willReturn(study);
+
+
+        //WHEN
         studyService.createNewStudy(1l , study);
+
+       //THEN
         assertEquals(member,study.getOwner());
-        //memberService의 notify 메소드를 1번 호출했는지 확인
         verify(memberService,times(1)).notify(study);
-        //notify(study) 호출후 아무것도 memberService 아무것도 하지말아라 테스트 깨진다. 어떤 액션 후에 그 목을 다시는 사용하지 말아라
-        verify(memberService,times(1)).notify(member);
-        //memberService의 validate 메소드 를 전혀 호출이 되지 않는지 확인
-        verify(memberService,never()).validate(any());
 
-        //순서 테스트 study 를 먼저 호출하고 member 을 호출한다.
-        InOrder inOrder = inOrder(memberService);
-        inOrder.verify(memberService).notify(study);
-        inOrder.verify(memberService).notify(member);
-
+        then(memberService).should(times(1)).notify(study);
+        //then(memberService).shouldHaveNoMoreInteractions();
 
     }
 }
